@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="كودكرافت | أعمالنا" />
+  <meta property="og:description" content="معرض أعمال كودكرافت: مشاريع متميزة في تطوير المواقع والتطبيقات" />
+  <meta property="og:image" content="https://mocha-cdn.com/og.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>كودكرافت | أعمالنا</title>
+  <style>
+    .portfolio-section {
+      padding: 4rem 0;
+      background-color: var(--color-white);
+    }
+    
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .filter-button {
+      padding: 0.5rem 1.5rem;
+      border-radius: 2rem;
+      border: none;
+      background-color: var(--color-gray-100);
+      color: var(--color-gray-700);
+      font-weight: 500;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .filter-button:hover {
+      background-color: var(--color-gray-200);
+    }
+    
+    .filter-button.active {
+      background-color: var(--color-blue-600);
+      color: var(--color-white);
+    }
+    
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .portfolio-item {
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background-color: var(--color-white);
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.5s, box-shadow 0.5s;
+    }
+    
+    .portfolio-item:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-xl);
+    }
+    
+    .portfolio-image {
+      height: 240px;
+      overflow: hidden;
+    }
+    
+    .portfolio-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    
+    .portfolio-item:hover .portfolio-image img {
+      transform: scale(1.1);
+    }
+    
+    .portfolio-content {
+      padding: 1.5rem;
+    }
+    
+    .portfolio-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    
+    .portfolio-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    
+    .portfolio-category {
+      background-color: var(--color-blue-100);
+      color: var(--color-blue-600);
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+    }
+    
+    .portfolio-description {
+      color: var(--color-gray-700);
+    }
+    
+    /* Modal Styles */
+    .portfolio-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    
+    .portfolio-modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background-color: var(--color-white);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow: auto;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.3s;
+    }
+    
+    .portfolio-modal.active .modal-content {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .modal-image {
+      height: 400px;
+      position: relative;
+    }
+    
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: rgba(255, 255, 255, 0.75);
+      color: var(--color-gray-800);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .modal-close:hover {
+      background-color: var(--color-white);
+    }
+    
+    .modal-details {
+      padding: 2rem;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+    
+    .modal-category {
+      background-color: var(--color-blue-100);
+      color: var(--color-blue-600);
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+    }
+    
+    .modal-description {
+      margin-bottom: 1.5rem;
+      color: var(--color-gray-700);
+    }
+    
+    .project-details {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-gray-200);
+    }
+    
+    .project-details-title {
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    
+    .project-meta {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      color: var(--color-gray-700);
+    }
+    
+    .project-meta-label {
+      font-weight: 700;
+      display: block;
+    }
+    
+    .modal-actions {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    
+    .view-project-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-blue-600);
+      color: var(--color-white);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .view-project-button:hover {
+      background-color: var(--color-blue-700);
+    }
+    
+    @media (min-width: 768px) {
+      .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .portfolio-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">
+          <div class="logo-wrapper">
+            <span class="logo-bracket logo-animate-rotate">{</span>
+            <div class="logo-text">كود<span class="logo-gold">كرافت</span></div>
+            <span class="logo-bracket logo-animate-rotate">}</span>
+            <span class="logo-gear logo-gear-animate">⚙️</span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav">
+          <ul class="nav-list">
+            <li class="nav-item"><a href="index.html">الرئيسية</a></li>
+            <li class="nav-item"><a href="services.html">خدماتنا</a></li>
+            <li class="nav-item active"><a href="portfolio.html">أعمالنا</a></li>
+            <li class="nav-item"><a href="contact.html">اتصل بنا</a></li>
+          </ul>
+          <div class="start-project">
+            <a href="#" class="start-link">ابدأ مشروعك</a>
+          </div>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button class="menu-toggle" aria-label="Toggle menu">
+          <span class="menu-icon"></span>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation -->
+      <div class="mobile-nav">
+        <ul class="mobile-nav-list">
+          <li class="mobile-nav-item"><a href="index.html">الرئيسية</a></li>
+          <li class="mobile-nav-item"><a href="services.html">خدماتنا</a></li>
+          <li class="mobile-nav-item active"><a href="portfolio.html">أعمالنا</a></li>
+          <li class="mobile-nav-item"><a href="contact.html">اتصل بنا</a></li>
+          <li class="mobile-nav-item start-item">
+            <a href="#" class="mobile-start-link">ابدأ مشروعك</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-blue py-16">
+    <div class="container">
+      <div class="text-center max-w-3xl mx-auto">
+        <h1 class="text-4xl font-bold mb-4 animate-fade-up">
+          معرض <span class="text-blue">أعمالنا</span>
+        </h1>
+        <p class="text-gray-600 text-lg mb-8 animate-fade-up" style="animation-delay: 0.2s">
+          نماذج من المشاريع التي قمنا بتنفيذها لعملائنا تعكس خبرتنا وقدرتنا على تحويل الأفكار إلى منتجات رقمية متميزة
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section class="portfolio-section">
+    <div class="container">
+      <!-- Filter Buttons -->
+      <div class="filter-buttons">
+        <button class="filter-button active" data-filter="all">الكل</button>
+        <button class="filter-button" data-filter="web">مواقع إلكترونية</button>
+        <button class="filter-button" data-filter="app">تطبيقات</button>
+        <button class="filter-button" data-filter="ui">واجهات مستخدم</button>
+      </div>
+
+      <!-- Portfolio Grid -->
+      <div class="portfolio-grid">
+        <!-- Portfolio Item 1 -->
+        <div class="portfolio-item animate-on-scroll" data-category="web">
+          <div class="portfolio-image">
+            <img src="/images/zaker img.png" style="max-width: 100%; height: auto; display: inline-block;" alt="منصة تعليمية">
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-header">
+              <h3 class="portfolio-title">موقع ذاكر</h3>
+              <span class="portfolio-category">مواقع إلكترونية</span>
+            </div>
+            <p class="portfolio-description">موقع ذاكر منصة اسلامية لجمع وإطلاق حملات  ذكر حول العالم </p>
+          </div>
+        </div>
+
+        <!-- Portfolio Item 2 -->
+<div class="portfolio-item animate-on-scroll" data-category="app">
+  <div class="portfolio-image" style="text-align: center;">
+    <img src="/images/samaa.png" alt="تطبيق سماع" style="max-width: 100%; height: auto; display: inline-block;">
+  </div>
+  <div class="portfolio-content">
+    <div class="portfolio-header">
+      <h3 class="portfolio-title">تطبيق سماع</h3>
+      <span class="portfolio-category">تطبيقات</span>
+    </div>
+    <p class="portfolio-description">
+      تطبيق حديث يمكّنك من مشاهدة الفيديوهات والاستماع إلى الموسيقى والمقاطع الصوتية بجودة عالية وتصميم سهل الاستخدام.
+    </p>
+  </div>
+</div>
+
+
+
+        <!-- Portfolio Item 3 -->
+        <div class="portfolio-item animate-on-scroll" data-category="web">
+          <div class="portfolio-image">
+            <img src="/images/islamic bolg.png" alt="موقع للتجارة الإلكترونية" >
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-header">
+              <h3 class="portfolio-title">مدونة إسلامية </h3>
+              <span class="portfolio-category">مواقع إلكترونية</span>
+            </div>
+            <p class="portfolio-description">مودنة اسلامية متكاملة مختصة في نشر المقالات الاسلامية في جميع الاختصاصات الدينية</p>
+          </div>
+        </div>
+
+       
+
+        <!-- Portfolio Item 5 -->
+        <div class="portfolio-item animate-on-scroll" data-category="app">
+          <div class="portfolio-image">
+<img src="/images/wasel.png"
+     alt="تطبيق توصيل طعام"
+     style="width: auto; height: auto; display: block; max-width: none;">
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-header">
+              <h3 class="portfolio-title">منصة وصل </h3>
+              <span class="portfolio-category">تطبيقات</span>
+            </div>
+            <p class="portfolio-description">منصة مزودي الخدمات متخصصة في نشر الخدمات مع امكانية حجز خدمة </p>
+          </div>
+        </div>
+
+        <!-- Portfolio Item 6 -->
+        <div class="portfolio-item animate-on-scroll" data-category="ui">
+          <div class="portfolio-image">
+            <img src="/images/1.png" alt="تصميم موقع شركة" style="max-width: 100%; height: auto; display: inline-block;">
+          </div>
+          <div class="portfolio-content">
+            <div class="portfolio-header">
+              <h3 class="portfolio-title">تصميم موقع لشركة بيع احذية رياضية</h3>
+              <span class="portfolio-category">واجهات مستخدم</span>
+            </div>
+            <p class="portfolio-description">واجهة مستخدم لموقع شركة احترافي بتصميم عصري</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Modal -->
+  <div class="portfolio-modal">
+    <div class="modal-content">
+      <div class="modal-image">
+        <img id="modal-img" src="" alt="">
+        <div class="modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </div>
+      </div>
+      <div class="modal-details">
+        <div class="modal-header">
+          <h3 id="modal-title" class="modal-title"></h3>
+          <span id="modal-category" class="modal-category"></span>
+        </div>
+        <p id="modal-description" class="modal-description"></p>
+        <div class="project-details">
+          <h4 class="project-details-title">تفاصيل المشروع</h4>
+          <p class="mb-4">قمنا بتصميم وتطوير هذا المشروع باستخدام أحدث التقنيات لتحقيق أهداف العميل وتوفير تجربة مستخدم متميزة. استغرق المشروع 8 أسابيع للانتهاء من جميع المراحل بدءًا من التصميم وحتى الإطلاق.</p>
+          <div class="project-meta">
+            <!-- <div>
+              <span class="project-meta-label">التقنيات المستخدمة:</span>
+              <span>React, Node.js, MongoDB</span>
+            </div> -->
+            <div>
+              <span class="project-meta-label">مدة التنفيذ:</span>
+              <span>7 أيام</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <div class="footer-logo">
+            <span class="footer-bracket">{</span>
+            <span class="footer-logo-text">كود<span class="footer-gold">كرافت</span></span>
+            <span class="footer-bracket">}</span>
+          </div>
+          <p class="footer-description">
+            نحوّل الأفكار إلى واقع رقمي متميز من خلال تقديم خدمات تطوير وتصميم المواقع والتطبيقات بأعلى المعايير العالمية.
+          </p>
+          <div class="footer-social">
+            <a href="#" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="#" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+            </a>
+            <a href="#" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
+            </a>
+            <a href="#" class="social-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect width="4" height="12" x="2" y="9"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h3 class="footer-title">روابط سريعة</h3>
+          <ul class="footer-menu">
+            <li><a href="index.html" class="footer-link">الرئيسية</a></li>
+            <li><a href="services.html" class="footer-link">خدماتنا</a></li>
+            <li><a href="portfolio.html" class="footer-link">أعمالنا</a></li>
+            <li><a href="contact.html" class="footer-link">اتصل بنا</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-services">
+          <h3 class="footer-title">خدماتنا</h3>
+          <ul class="footer-menu">
+            <li class="footer-service">تطوير المواقع الإلكترونية</li>
+            <li class="footer-service">تطوير التطبيقات</li>
+            <li class="footer-service">تصميم واجهات المستخدم</li>
+            <li class="footer-service">الصيانة والدعم الفني</li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3 class="footer-title">تواصل معنا</h3>
+          <ul class="contact-list">
+            <li class="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span class="contact-text">حلب,الجمهورية العربية السورية</span>
+            </li>
+            <li class="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <span class="contact-text">+963962145376</span>
+            </li>
+            <li class="contact-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="contact-icon"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+              <span class="contact-text">62145376ww@gmail.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="copyright">جميع الحقوق محفوظة © <span id="current-year"></span> كودكرافت. تصميم وتطوير بكل شغف</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    
+    // Portfolio Filter
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to current button
+        this.classList.add('active');
+        
+        // Get filter value
+        const filterValue = this.getAttribute('data-filter');
+        
+        // Filter items
+        portfolioItems.forEach(item => {
+          if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Portfolio Modal
+    const portfolioModal = document.querySelector('.portfolio-modal');
+    const modalClose = document.querySelector('.modal-close');
+    const modalImg = document.getElementById('modal-img');
+    const modalTitle = document.getElementById('modal-title');
+    const modalCategory = document.getElementById('modal-category');
+    const modalDescription = document.getElementById('modal-description');
+    
+    // Open modal when clicking on portfolio item
+    portfolioItems.forEach(item => {
+      item.addEventListener('click', function() {
+        const img = this.querySelector('img').getAttribute('src');
+        const title = this.querySelector('.portfolio-title').textContent;
+        const category = this.querySelector('.portfolio-category').textContent;
+        const description = this.querySelector('.portfolio-description').textContent;
+        
+        modalImg.setAttribute('src', img);
+        modalTitle.textContent = title;
+        modalCategory.textContent = category;
+        modalDescription.textContent = description;
+        
+        portfolioModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+    
+    // Close modal when clicking on close button or outside the modal
+    modalClose.addEventListener('click', closeModal);
+    portfolioModal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+    
+    function closeModal() {
+      portfolioModal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+    
+    // Initialize scroll animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const animatedElements = document.querySelectorAll('.animate-on-scroll');
+      
+      function checkVisibility() {
+        animatedElements.forEach(element => {
+          const rect = element.getBoundingClientRect();
+          const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+          
+          // Add delay to stagger animations
+          const delay = element.getAttribute('data-delay') || 0;
+          
+          if (rect.top <= windowHeight * 0.8) {
+            setTimeout(() => {
+              element.classList.add('visible');
+            }, delay);
+          }
+        });
+      }
+      
+      // Check visibility on scroll
+      window.addEventListener('scroll', checkVisibility);
+      
+      // Check initially (for elements already in view)
+      checkVisibility();
+      
+      // Initialize mobile menu
+      const menuToggle = document.querySelector('.menu-toggle');
+      const mobileNav = document.querySelector('.mobile-nav');
+      
+      if (menuToggle && mobileNav) {
+        menuToggle.addEventListener('click', function() {
+          menuToggle.classList.toggle('active');
+          mobileNav.classList.toggle('active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
